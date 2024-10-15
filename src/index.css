@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'PP Mori';
+  src: url('/public/PPMori-Regular.woff');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'PP Mori';
+  src: url('/public/PPMori-SemiBold.woff');
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'PP Mori';
+  src: url('/public/PPMori-ExtraBold.woff');
+  font-weight: 800;
+}
+@font-face {
+  font-family: 'PP Radio Grotesk';
+  src: url('/public/PPMori-Book.otf');
+  font-weight: 400;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'PP Mori';
+  }
+  p {
+    font-family: 'PP Radio Grotesk';
+  }
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #ffff inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
