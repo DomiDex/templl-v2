@@ -34,12 +34,14 @@ export default function Footer() {
             <a
               href='https://x.com/domidexdesign'
               className='text-lightGray text-xl hover:scale-110 transition-all duration-300'
+              aria-label='Link to my X profile'
             >
               <img src={xIcon} alt='Link to my X profile' />
             </a>
             <a
               href='https://www.linkedin.com/in/dominique-degottex-08420778/'
               className='text-lightGray text-xl hover:scale-110 transition-all duration-300'
+              aria-label='Link to my LinkedIn profile'
             >
               <img src={linkedinIcon} alt='Link to my LinkedIn profile' />
             </a>

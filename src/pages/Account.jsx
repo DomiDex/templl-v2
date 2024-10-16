@@ -1,4 +1,4 @@
-import TemplateCard from '../components/TemplateCard';
+import AccountCard from '../components/AccountCard';
 export default function Account() {
   return (
     <>
@@ -20,16 +20,16 @@ export default function Account() {
         <section className='px-4 py-8  sm:px-8 md:px-16 '>
           <div className='container-xl lg:container mx-auto '>
             <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
+              <AccountCard />
             </div>
           </div>
         </section>
