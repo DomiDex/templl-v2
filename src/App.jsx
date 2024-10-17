@@ -14,6 +14,13 @@ import PublishTemplate from './pages/PublishTemplate';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import About from './pages/About';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+
+function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+  return user ? children : <Navigate to='/login' />;
+}
+
 function App() {
   const action = useNavigationType();
   const location = useLocation();
@@ -34,7 +41,7 @@ function App() {
         title = '';
         metaDescription = '';
         break;
-      case '/acount':
+      case '/account':
         title = '';
         metaDescription = '';
         break;
@@ -71,18 +78,34 @@ function App() {
   }, [pathname]);
 
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path='/' element={<Home />} />
-        <Route path='/account' element={<Account />} />
-        <Route path='/publish-template' element={<PublishTemplate />} />
-        <Route path='/privacy' element={<Privacy />} />
-        <Route path='/terms' element={<Terms />} />
-        <Route path='/about' element={<About />} />
-      </Route>
-      <Route path='/sign-up' element={<SignUp />} />
-      <Route path='/login' element={<Login />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path='/' element={<Home />} />
+          <Route
+            path='/account'
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/publish-template'
+            element={
+              <ProtectedRoute>
+                <PublishTemplate />
+              </ProtectedRoute>
+            }
+          />
+          <Route path='/privacy' element={<Privacy />} />
+          <Route path='/terms' element={<Terms />} />
+          <Route path='/about' element={<About />} />
+        </Route>
+        <Route path='/sign-up' element={<SignUp />} />
+        <Route path='/login' element={<Login />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

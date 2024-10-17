@@ -1,6 +1,28 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import coolText from '../assets/cool-text.webp';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate('/account');
+    } catch (error) {
+      setErrorMessage('Failed to log in: ' + error.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <main>
       <section className='bg-darkGray'>
@@ -11,6 +33,7 @@ export default function Login() {
           <div className='w-full h-screen md:w-1/3 bg-lightGray flex items-center justify-center'>
             <form
               className='flex flex-col space-y-4 p-8 w-full max-w-md'
+              onSubmit={handleSubmit}
               autoComplete='off'
             >
               <h2 className='text-2xl font-bold text-darkPurple mb-4'>Login</h2>
@@ -25,6 +48,8 @@ export default function Login() {
                   type='email'
                   id='email'
                   name='email'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className='w-full px-3 py-2 bg-white border border-darkGray rounded-md focus:outline-none focus:ring-1 focus:ring-darkPurple'
                   placeholder='Enter your email'
                   required
@@ -41,39 +66,34 @@ export default function Login() {
                   type='password'
                   id='password'
                   name='password'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className='w-full px-3 py-2 bg-white  border border-darkGray rounded-md focus:outline-none focus:ring-1 focus:ring-darkPurple'
                   placeholder='Enter your password'
                   required
                 />
               </div>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center'>
-                  <input
-                    type='checkbox'
-                    id='remember'
-                    name='remember'
-                    className='h-4 w-4 text-darkPurple focus:ring-darkPurple border-gray-300 rounded'
-                  />
-                  <label
-                    htmlFor='remember'
-                    className='ml-2 block text-sm text-darkPurple'
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <a
-                  href='#'
-                  className='text-sm text-purple-600 hover:text-purple-500'
-                >
-                  Forgot password?
-                </a>
-              </div>
+              {errorMessage && (
+                <p className='text-red-500 text-sm font-medium'>
+                  {errorMessage}
+                </p>
+              )}
               <button
                 type='submit'
                 className='w-full bg-purple text-white py-2 px-4 rounded-md hover:bg-lightPurple transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'
+                disabled={loading}
               >
-                Log in
+                {loading ? 'Logging in...' : 'Log in'}
               </button>
+              <p className='text-sm text-center text-darkPurple'>
+                Don't have an account?{' '}
+                <a
+                  href='/sign-up'
+                  className='text-purple-600 hover:text-purple-500'
+                >
+                  Sign up
+                </a>
+              </p>
             </form>
           </div>
         </div>

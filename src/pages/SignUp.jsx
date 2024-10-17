@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import coolText from '../assets/cool-text.webp';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -9,6 +11,9 @@ export default function SignUp() {
     confirmPassword: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -16,21 +21,19 @@ export default function SignUp() {
     setErrorMessage(''); // Clear error message on input change
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage('Passwords do not match!');
     } else {
-      // Proceed with signup logic (e.g., send data to server)
-      console.log('Signup successful!', formData);
-      // Reset form and error message
-      setFormData({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
-      setErrorMessage('');
+      setLoading(true);
+      try {
+        await signup(formData.email, formData.password);
+        navigate('/account');
+      } catch (error) {
+        setErrorMessage('Failed to create an account: ' + error.message);
+      }
+      setLoading(false);
     }
   };
 
@@ -64,7 +67,7 @@ export default function SignUp() {
                   value={formData.username}
                   onChange={handleInputChange}
                   className='w-full px-3 py-2 bg-white border border-darkGray rounded-md focus:outline-none focus:ring-1 focus:ring-darkPurple'
-                  placeholder='Enter your email'
+                  placeholder='Enter your username'
                   required
                 />
               </div>
@@ -130,8 +133,9 @@ export default function SignUp() {
               <button
                 type='submit'
                 className='w-full bg-purple text-white py-2 px-4 rounded-md hover:bg-lightPurple transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'
+                disabled={loading}
               >
-                Sign Up
+                {loading ? 'Signing Up...' : 'Sign Up'}
               </button>
               <p className='text-sm text-center text-darkPurple'>
                 Already have an account?{' '}
