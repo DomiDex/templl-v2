@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { publishTemplate } from '../redux/templateSlice';
 import magicPenIcon from '../assets/magicpen.svg';
+
 export default function PublishTemplate() {
   const [formData, setFormData] = useState({
     templateName: '',
@@ -10,7 +13,11 @@ export default function PublishTemplate() {
     thumbnailImage: null,
     shortDescription: '',
     description: '',
+    error: null,
   });
+
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.templates);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,10 +29,43 @@ export default function PublishTemplate() {
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    setFormData((prevState) => ({ ...prevState, error: null }));
+    try {
+      const templateData = {
+        name: formData.templateName,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        template_link: formData.purchaseLink,
+        short_description: formData.shortDescription,
+        long_description: formData.description,
+        image_main: formData.mainImage,
+        image_thumbnail: formData.thumbnailImage,
+      };
+      const resultAction = await dispatch(publishTemplate(templateData));
+      if (publishTemplate.fulfilled.match(resultAction)) {
+        // Reset form data here
+        setFormData({
+          templateName: '',
+          category: '',
+          price: '',
+          purchaseLink: '',
+          mainImage: null,
+          thumbnailImage: null,
+          shortDescription: '',
+          description: '',
+          error: null,
+        });
+      } else if (publishTemplate.rejected.match(resultAction)) {
+        const errorMessage =
+          resultAction.payload || 'Failed to publish template';
+        setFormData((prevState) => ({ ...prevState, error: errorMessage }));
+      }
+    } catch (error) {
+      console.error('Failed to publish template:', error);
+      setFormData((prevState) => ({ ...prevState, error: error.message }));
+    }
   };
 
   return (
@@ -202,11 +242,15 @@ export default function PublishTemplate() {
                   ></textarea>
                 </div>
                 <div className='col-span-full mt-1'>
+                  {formData.error && (
+                    <p className='text-red-500 mb-2'>{formData.error}</p>
+                  )}
                   <button
                     type='submit'
                     className='w-full bg-purple text-white py-2 px-4 rounded-md hover:bg-lightPurple transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'
+                    disabled={loading}
                   >
-                    Publish Template
+                    {loading ? 'Publishing...' : 'Publish Template'}
                   </button>
                 </div>
               </div>
