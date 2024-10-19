@@ -78,7 +78,7 @@ export default function EditTemplateModal() {
 
   return (
     <div className='fixed inset-0 bg-darkPurple bg-opacity-50 flex items-center justify-center z-50'>
-      <div className='bg-lightGray rounded-lg p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto'>
+      <div className='bg-lightGray rounded-lg p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto no-scrollbar'>
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-3xl font-bold text-darkPurple'>Edit Template</h2>
           <button
