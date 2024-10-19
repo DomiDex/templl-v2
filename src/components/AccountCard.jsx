@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { deleteTemplate } from '../redux/templateSlice';
+import { deleteTemplate, openEditModal } from '../redux/templateSlice';
 
 export default function AccountCard({ template }) {
   const dispatch = useDispatch();
@@ -9,6 +9,10 @@ export default function AccountCard({ template }) {
     if (window.confirm('Are you sure you want to delete this template?')) {
       dispatch(deleteTemplate(template.id));
     }
+  };
+
+  const handleEdit = () => {
+    dispatch(openEditModal(template));
   };
 
   return (
@@ -28,7 +32,10 @@ export default function AccountCard({ template }) {
       </div>
 
       <div className='absolute bottom-0 left-0 w-full h-full flex flex-col justify-center items-center translate-y-full group-hover:translate-y-0 transition-all duration-200 rounded-md gap-2'>
-        <button className='relative z-10 bg-lightGray hover:bg-hoverGray text-darkPurple py-2 px-4 rounded transition-colors duration-200 w-32'>
+        <button
+          className='relative z-10 bg-lightGray hover:bg-hoverGray text-darkPurple py-2 px-4 rounded transition-colors duration-200 w-32'
+          onClick={handleEdit}
+        >
           Edit
         </button>
         <button

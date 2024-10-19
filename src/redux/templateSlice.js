@@ -149,14 +149,83 @@ export const deleteTemplate = createAsyncThunk(
   }
 );
 
+export const openEditModal = createAsyncThunk(
+  'templates/openEditModal',
+  async (template, { dispatch }) => {
+    dispatch(setEditingTemplate(template));
+    return template;
+  }
+);
+
+export const updateTemplate = createAsyncThunk(
+  'templates/updateTemplate',
+  async (updatedTemplate, { rejectWithValue }) => {
+    try {
+      let mainImageUrl = updatedTemplate.image_main;
+      let thumbnailUrl = updatedTemplate.image_thumbnail;
+
+      // Upload new images if provided
+      if (updatedTemplate.mainImage) {
+        const mainImageRef = ref(
+          storage,
+          `templates/${updatedTemplate.name}/mainImage`
+        );
+        const mainImageSnapshot = await uploadBytes(
+          mainImageRef,
+          updatedTemplate.mainImage
+        );
+        mainImageUrl = await getDownloadURL(mainImageSnapshot.ref);
+      }
+
+      if (updatedTemplate.thumbnailImage) {
+        const thumbnailRef = ref(
+          storage,
+          `templates/${updatedTemplate.name}/thumbnail`
+        );
+        const thumbnailSnapshot = await uploadBytes(
+          thumbnailRef,
+          updatedTemplate.thumbnailImage
+        );
+        thumbnailUrl = await getDownloadURL(thumbnailSnapshot.ref);
+      }
+
+      const templateWithUrls = {
+        ...updatedTemplate,
+        image_main: mainImageUrl,
+        image_thumbnail: thumbnailUrl,
+      };
+
+      const response = await axios.put(
+        `${API_URL}/${updatedTemplate.id}`,
+        templateWithUrls
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const templateSlice = createSlice({
   name: 'templates',
   initialState: {
     templates: [],
     loading: false,
     error: null,
+    editingTemplate: null,
+    isEditModalOpen: false,
   },
-  reducers: {},
+  reducers: {
+    setEditingTemplate: (state, action) => {
+      state.editingTemplate = action.payload;
+      state.isEditModalOpen = true;
+    },
+    closeEditModal: (state) => {
+      state.editingTemplate = null;
+      state.isEditModalOpen = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(publishTemplate.pending, (state) => {
@@ -196,8 +265,37 @@ const templateSlice = createSlice({
       .addCase(deleteTemplate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(openEditModal.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(openEditModal.fulfilled, (state, action) => {
+        state.loading = false;
+        state.editingTemplate = action.payload;
+      })
+      .addCase(openEditModal.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateTemplate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateTemplate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.templates = state.templates.map((template) =>
+          template.id === action.payload.id ? action.payload : template
+        );
+        state.editingTemplate = null;
+      })
+      .addCase(updateTemplate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
 export default templateSlice.reducer;
+
+export const { setEditingTemplate, closeEditModal } = templateSlice.actions;

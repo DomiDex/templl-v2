@@ -2,10 +2,13 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTemplates } from '../redux/templateSlice';
 import AccountCard from '../components/AccountCard';
+import EditTemplateModal from '../components/EditTemplateModal';
 
 export default function Account() {
   const dispatch = useDispatch();
-  const { templates, loading, error } = useSelector((state) => state.templates);
+  const { templates, loading, error, isEditModalOpen } = useSelector(
+    (state) => state.templates
+  );
 
   useEffect(() => {
     dispatch(fetchTemplates());
@@ -13,7 +16,7 @@ export default function Account() {
 
   return (
     <main className='container mx-auto px-4 py-8'>
-      <section className='px-4 py-8 sm:px-8 md:px-16 md:py-16'>
+      <section className='px-4 py-8 sm:px-8 md:px-16'>
         <div className='container-xl lg:container mx-auto flex flex-col lg:flex-row justify-between items-center gap-8'>
           <div className='w-full lg:w-1/2'>
             <h1 className='text-darkPurple text-3xl md:text-5xl font-heading font-semibold'>
@@ -41,6 +44,7 @@ export default function Account() {
           )}
         </div>
       </section>
+      {isEditModalOpen && <EditTemplateModal />}
     </main>
   );
 }
