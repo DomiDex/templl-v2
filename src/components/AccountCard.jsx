@@ -1,26 +1,42 @@
-import template from '../assets/thumbnail-1@2x.png';
-export default function TemplateCard() {
+import PropTypes from 'prop-types';
+
+export default function AccountCard({ template }) {
   return (
-    <button className='relative overflow-hidden bg-darkerGray hover:bg-hoverGray transition-colors duration-200 group rounded-lg p-2'>
-      <img className='w-full rounded-md' src={template} alt='alt' />
+    <div className='relative overflow-hidden bg-darkerGray hover:bg-hoverGray transition-colors duration-200 group rounded-lg p-2'>
+      <img
+        className='w-full rounded-md'
+        src={template.image_thumbnail}
+        alt={template.name}
+      />
       <div className='flex flex-row justify-between items-center gap-2 p-2'>
-        <h3 className='text-darkPurple text-xl font-bold'>Odil</h3>
-        <p>$49</p>
+        <h3 className='text-darkPurple text-xl font-bold'>{template.name}</h3>
+        <p>${template.price}</p>
       </div>
       <div className='flex flex-row justify-between items-center gap-2 p-2'>
-        <p>by Domidex</p>
-        <p className='text-xs sm:text-sm'>SAAS</p>
+        <p>by {template.author || 'Unknown'}</p>
+        <p className='text-xs sm:text-sm'>{template.category}</p>
       </div>
 
-      <div className='absolute  bottom-0 left-0 w-full h-full flex flex-col justify-center items-center translate-y-full group-hover:translate-y-0 transition-all duration-200 rounded-md gap-2'>
-        <button className='relative z-10 bg-lightGray hover:bg-hoverGray text-darkPurple  py-2 px-4 rounded transition-colors duration-200 w-32'>
+      <div className='absolute bottom-0 left-0 w-full h-full flex flex-col justify-center items-center translate-y-full group-hover:translate-y-0 transition-all duration-200 rounded-md gap-2'>
+        <button className='relative z-10 bg-lightGray hover:bg-hoverGray text-darkPurple py-2 px-4 rounded transition-colors duration-200 w-32'>
           Edit
         </button>
-        <button className='bg-purple hover:bg-lightPurple text-white  py-2 px-4 rounded transition-colors duration-200 w-32'>
+        <button className='bg-purple hover:bg-lightPurple text-white py-2 px-4 rounded transition-colors duration-200 w-32'>
           Delete
         </button>
-        <div className='absolute -z-10 bottom-0 left-0 w-full h-full bg-darkPurple opacity-30 '></div>
+        <div className='absolute -z-10 bottom-0 left-0 w-full h-full bg-darkPurple opacity-30'></div>
       </div>
-    </button>
+    </div>
   );
 }
+
+AccountCard.propTypes = {
+  template: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    category: PropTypes.string.isRequired,
+    image_thumbnail: PropTypes.string.isRequired,
+    author: PropTypes.string,
+  }).isRequired,
+};

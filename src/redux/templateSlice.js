@@ -119,11 +119,14 @@ export const fetchTemplates = createAsyncThunk(
   'templates/fetchTemplates',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(API_URL);
-      return response.data.rows;
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error('Failed to fetch templates');
+      }
+      const data = await response.json();
+      return data.rows;
     } catch (error) {
-      console.error('Error fetching templates:', error);
-      return rejectWithValue(error.message || 'Failed to fetch templates');
+      return rejectWithValue(error.message);
     }
   }
 );
