@@ -1,5 +1,16 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTemplates } from '../redux/templateSlice';
 import TemplateCard from '../components/TemplateCard';
+
 export default function Home() {
+  const dispatch = useDispatch();
+  const { templates, loading, error } = useSelector((state) => state.templates);
+
+  useEffect(() => {
+    dispatch(fetchTemplates());
+  }, [dispatch]);
+
   return (
     <>
       <main>
@@ -24,18 +35,15 @@ export default function Home() {
         </section>
         <section className='px-4 py-8  sm:px-8 md:px-16 '>
           <div className='container-xl lg:container mx-auto '>
-            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-              <TemplateCard />
-            </div>
+            {loading && <p>Loading templates...</p>}
+            {error && <p>Error: {error}</p>}
+            {!loading && !error && (
+              <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
+                {templates.map((template) => (
+                  <TemplateCard key={template.id} template={template} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>

@@ -114,6 +114,20 @@ export const publishTemplate = createAsyncThunk(
   }
 );
 
+// New action to fetch templates
+export const fetchTemplates = createAsyncThunk(
+  'templates/fetchTemplates',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(API_URL);
+      return response.data.rows;
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      return rejectWithValue(error.message || 'Failed to fetch templates');
+    }
+  }
+);
+
 const templateSlice = createSlice({
   name: 'templates',
   initialState: {
@@ -133,6 +147,18 @@ const templateSlice = createSlice({
         state.templates.push(action.payload);
       })
       .addCase(publishTemplate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchTemplates.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTemplates.fulfilled, (state, action) => {
+        state.loading = false;
+        state.templates = action.payload;
+      })
+      .addCase(fetchTemplates.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
