@@ -1,6 +1,16 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { deleteTemplate } from '../redux/templateSlice';
 
 export default function AccountCard({ template }) {
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this template?')) {
+      dispatch(deleteTemplate(template.id));
+    }
+  };
+
   return (
     <div className='relative overflow-hidden bg-darkerGray hover:bg-hoverGray transition-colors duration-200 group rounded-lg p-2'>
       <img
@@ -21,7 +31,10 @@ export default function AccountCard({ template }) {
         <button className='relative z-10 bg-lightGray hover:bg-hoverGray text-darkPurple py-2 px-4 rounded transition-colors duration-200 w-32'>
           Edit
         </button>
-        <button className='bg-purple hover:bg-lightPurple text-white py-2 px-4 rounded transition-colors duration-200 w-32'>
+        <button
+          className='bg-purple hover:bg-lightPurple text-white py-2 px-4 rounded transition-colors duration-200 w-32'
+          onClick={handleDelete}
+        >
           Delete
         </button>
         <div className='absolute -z-10 bottom-0 left-0 w-full h-full bg-darkPurple opacity-30'></div>

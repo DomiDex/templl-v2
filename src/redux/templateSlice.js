@@ -131,6 +131,24 @@ export const fetchTemplates = createAsyncThunk(
   }
 );
 
+// New action to delete a template
+export const deleteTemplate = createAsyncThunk(
+  'templates/deleteTemplate',
+  async (templateId, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/${templateId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete template');
+      }
+      return templateId;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const templateSlice = createSlice({
   name: 'templates',
   initialState: {
@@ -162,6 +180,20 @@ const templateSlice = createSlice({
         state.templates = action.payload;
       })
       .addCase(fetchTemplates.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteTemplate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteTemplate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.templates = state.templates.filter(
+          (template) => template.id !== action.payload
+        );
+      })
+      .addCase(deleteTemplate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
