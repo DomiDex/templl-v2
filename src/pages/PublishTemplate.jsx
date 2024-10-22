@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { publishTemplate } from '../redux/templateSlice';
+import { publishTemplate, openAiModal } from '../redux/templateSlice';
 import magicPenIcon from '../assets/magicpen.svg';
+import AiFormModal from '../components/AiFormModal';
 
 export default function PublishTemplate() {
   const [formData, setFormData] = useState({
@@ -17,7 +18,9 @@ export default function PublishTemplate() {
   });
 
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.templates);
+  const { loading, error, isAiModalOpen } = useSelector(
+    (state) => state.templates
+  );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -113,9 +116,17 @@ export default function PublishTemplate() {
                   >
                     <option value=''>Select a category</option>
                     <option value='business'>Business</option>
+                    <option value='design'>Design</option>
+                    <option value='agency'>Agency</option>
+                    <option value='finance'>Finance</option>
+                    <option value='fitness'>Fitness</option>
+                    <option value='medical'>Medical</option>
+                    <option value='photography'>Photography</option>
+                    <option value='real Estate'>Real Estate</option>
                     <option value='portfolio'>Portfolio</option>
-                    <option value='ecommerce'>E-commerce</option>
-                    <option value='blog'>Blog</option>
+                    <option value='tech'>Tech</option>
+                    <option value='restaurant'>Restaurant</option>
+                    <option value='marketing'>Marketing</option>
                   </select>
                 </div>
                 <div>
@@ -217,9 +228,7 @@ export default function PublishTemplate() {
                     <button
                       type='button'
                       className='text-xs bg-purple text-white py-1 px-3 rounded-md hover:bg-lightPurple transition-all duration-200 flex items-center'
-                      onClick={() => {
-                        /* Add AI writing logic here */
-                      }}
+                      onClick={() => dispatch(openAiModal())}
                     >
                       <img
                         src={magicPenIcon}
@@ -258,6 +267,7 @@ export default function PublishTemplate() {
           </div>
         </div>
       </section>
+      {isAiModalOpen && <AiFormModal />}
     </main>
   );
 }

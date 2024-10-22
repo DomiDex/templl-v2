@@ -215,6 +215,7 @@ const templateSlice = createSlice({
     error: null,
     editingTemplate: null,
     isEditModalOpen: false,
+    isAiModalOpen: false,
   },
   reducers: {
     setEditingTemplate: (state, action) => {
@@ -224,6 +225,12 @@ const templateSlice = createSlice({
     closeEditModal: (state) => {
       state.editingTemplate = null;
       state.isEditModalOpen = false;
+    },
+    openAiModal: (state) => {
+      state.isAiModalOpen = true;
+    },
+    closeAiModal: (state) => {
+      state.isAiModalOpen = false;
     },
   },
   extraReducers: (builder) => {
@@ -298,4 +305,5 @@ const templateSlice = createSlice({
 
 export default templateSlice.reducer;
 
-export const { setEditingTemplate, closeEditModal } = templateSlice.actions;
+export const { setEditingTemplate, closeEditModal, openAiModal, closeAiModal } =
+  templateSlice.actions;

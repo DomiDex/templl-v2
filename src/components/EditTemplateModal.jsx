@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTemplate, closeEditModal } from '../redux/templateSlice';
-import magicPenIcon from '../assets/magicpen.svg';
+import AiFormModal from './AiFormModal';
 
 export default function EditTemplateModal() {
   const dispatch = useDispatch();
-  const { editingTemplate, loading, error } = useSelector(
+  const { editingTemplate, loading, isAiModalOpen } = useSelector(
     (state) => state.templates
   );
   const [formData, setFormData] = useState({
@@ -19,6 +19,8 @@ export default function EditTemplateModal() {
     description: '',
     error: null,
   });
+  const [mainImagePreview, setMainImagePreview] = useState('');
+  const [thumbnailImagePreview, setThumbnailImagePreview] = useState('');
 
   useEffect(() => {
     if (editingTemplate) {
@@ -31,6 +33,8 @@ export default function EditTemplateModal() {
         description: editingTemplate.long_description,
         error: null,
       });
+      setMainImagePreview(editingTemplate.image_main);
+      setThumbnailImagePreview(editingTemplate.image_thumbnail);
     }
   }, [editingTemplate]);
 
@@ -41,7 +45,17 @@ export default function EditTemplateModal() {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormData({ ...formData, [name]: files[0] });
+    if (files[0]) {
+      setFormData({ ...formData, [name]: files[0] });
+
+      // Create a preview URL for the selected image
+      const previewUrl = URL.createObjectURL(files[0]);
+      if (name === 'mainImage') {
+        setMainImagePreview(previewUrl);
+      } else if (name === 'thumbnailImage') {
+        setThumbnailImagePreview(previewUrl);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -54,9 +68,10 @@ export default function EditTemplateModal() {
       template_link: formData.purchaseLink,
       short_description: formData.shortDescription,
       long_description: formData.description,
-      image_main: formData.mainImage || editingTemplate.image_main,
-      image_thumbnail:
-        formData.thumbnailImage || editingTemplate.image_thumbnail,
+      mainImage: formData.mainImage,
+      thumbnailImage: formData.thumbnailImage,
+      image_main: editingTemplate.image_main,
+      image_thumbnail: editingTemplate.image_thumbnail,
     };
 
     try {
@@ -138,9 +153,17 @@ export default function EditTemplateModal() {
               >
                 <option value=''>Select a category</option>
                 <option value='business'>Business</option>
+                <option value='design'>Design</option>
+                <option value='agency'>Agency</option>
+                <option value='finance'>Finance</option>
+                <option value='fitness'>Fitness</option>
+                <option value='medical'>Medical</option>
+                <option value='photography'>Photography</option>
+                <option value='real Estate'>Real Estate</option>
                 <option value='portfolio'>Portfolio</option>
-                <option value='ecommerce'>E-commerce</option>
-                <option value='blog'>Blog</option>
+                <option value='tech'>Tech</option>
+                <option value='restaurant'>Restaurant</option>
+                <option value='marketing'>Marketing</option>
               </select>
             </div>
             <div>
@@ -193,7 +216,6 @@ export default function EditTemplateModal() {
                 onChange={handleFileChange}
                 className='w-full px-3 py-2 bg-white border border-darkGray rounded-md focus:outline-none focus:ring-1 focus:ring-darkPurple'
                 accept='image/*'
-                required
               />
             </div>
             <div>
@@ -210,7 +232,6 @@ export default function EditTemplateModal() {
                 onChange={handleFileChange}
                 className='w-full px-3 py-2 bg-white border border-darkGray rounded-md focus:outline-none focus:ring-1 focus:ring-darkPurple'
                 accept='image/*'
-                required
               />
             </div>
             <div className='col-span-full'>
@@ -228,7 +249,6 @@ export default function EditTemplateModal() {
                 onChange={handleInputChange}
                 className='w-full px-3 py-2 bg-white border border-darkGray rounded-md focus:outline-none focus:ring-1 focus:ring-darkPurple'
                 placeholder='MyCoolTemplate is a...'
-                required
               />
             </div>
             <div className='col-span-full'>
@@ -239,20 +259,6 @@ export default function EditTemplateModal() {
                 >
                   Long Description
                 </label>
-                <button
-                  type='button'
-                  className='text-xs bg-purple text-white py-1 px-3 rounded-md hover:bg-lightPurple transition-all duration-200 flex items-center'
-                  onClick={() => {
-                    /* Add AI writing logic here */
-                  }}
-                >
-                  <img
-                    src={magicPenIcon}
-                    alt='Magic Pen'
-                    className='w-4 h-4 mr-2'
-                  />
-                  Write with AI
-                </button>
               </div>
 
               <textarea
@@ -290,6 +296,7 @@ export default function EditTemplateModal() {
           </div>
         </form>
       </div>
+      {isAiModalOpen && <AiFormModal />}
     </div>
   );
 }
