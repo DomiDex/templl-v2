@@ -3,7 +3,7 @@ import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/templates';
+const API_URL = 'https://cap-api.vercel.app/templates';
 const TIMEOUT_MS = 10000;
 const MAX_RETRIES = 3;
 
@@ -101,10 +101,10 @@ export const publishTemplate = createAsyncThunk(
       const result = await publishTemplateWithRetry(templateWithUrls);
       console.log('API response:', result);
 
-      console.log(mainImageUrl);
-      console.log(thumbnailUrl);
-      console.log('anything');
-      return 'result';
+      // console.log(mainImageUrl);
+      // console.log(thumbnailUrl);
+      // console.log('anything');
+      return result;
     } catch (error) {
       console.error('Error publishing template:', error);
       return rejectWithValue(
@@ -119,12 +119,17 @@ export const fetchTemplates = createAsyncThunk(
   'templates/fetchTemplates',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_URL);
-      if (!response.ok) {
+      const response = await axios.get(API_URL);
+      console.log(response);
+      // const response = await fetch(API_URL);
+      const data = await response.data;
+      // console.log('response' + response);
+      // console.log(response);
+      if (response.status !== 200) {
         throw new Error('Failed to fetch templates');
       }
-      const data = await response.json();
-      return data.rows;
+
+      return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }

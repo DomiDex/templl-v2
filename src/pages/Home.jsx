@@ -24,11 +24,12 @@ export default function Home() {
             </div>
             <div className='w-full md:w-1/2'>
               <p>
-                Lorem ipsum dolor sit amet consectetur. Eu ut sed non ultricies
-                sit est. At elementum tristique cras purus. Urna interdum
-                consectetur aliquet quam. Volutpat pharetra consequat nunc
-                facilisis mauris facilisi. Duis pretium ullamcorper nulla urna.
-                Facilisis malesuada felis a amet facilisi enim arcu.
+                Whether you're building a portfolio, launching an e-commerce
+                site, or creating a blog, these templates combine sleek design,
+                responsive layouts, and user-friendly customization options.
+                Perfect for anyone looking to create a professional website with
+                ease, Temple A's Webflow templates provide the perfect blend of
+                aesthetics and functionality to help your brand stand out.
               </p>
             </div>
           </div>
@@ -39,6 +40,8 @@ export default function Home() {
             {error && <p>Error: {error}</p>}
             {!loading && !error && (
               <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
+                {console.log(templates)}
+
                 {templates.map((template) => (
                   <TemplateCard key={template.id} template={template} />
                 ))}
