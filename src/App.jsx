@@ -32,51 +32,6 @@ function App() {
     }
   }, [action, pathname]);
 
-  useEffect(() => {
-    let title = '';
-    let metaDescription = '';
-
-    switch (pathname) {
-      case '/':
-        title = '';
-        metaDescription = '';
-        break;
-      case '/account':
-        title = '';
-        metaDescription = '';
-        break;
-      case '/sign-up':
-        title = '';
-        metaDescription = '';
-        break;
-      case '/login':
-        title = '';
-        metaDescription = '';
-        break;
-      case '/publish-template':
-        title = '';
-        metaDescription = '';
-        break;
-      case '/':
-        title = '';
-        metaDescription = '';
-        break;
-    }
-
-    if (title) {
-      document.title = title;
-    }
-
-    if (metaDescription) {
-      const metaDescriptionTag = document.querySelector(
-        'head > meta[name="description"]'
-      );
-      if (metaDescriptionTag) {
-        metaDescriptionTag.content = metaDescription;
-      }
-    }
-  }, [pathname]);
-
   return (
     <AuthProvider>
       <Routes>
