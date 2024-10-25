@@ -1,10 +1,9 @@
 {
-  "version": 2,
-  "name": "Templl",
-  "builds": [
+  "routes": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build"
+      "src": "/[^.]+",
+      "dest": "/",
+      "status": 200
     }
   ]
 }
