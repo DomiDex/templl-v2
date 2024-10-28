@@ -18,12 +18,15 @@ export default function LogginSystem() {
     <div className='bg-darkerGray flex flex-row items-center p-1 rounded-lg'>
       {user ? (
         <>
-          <button onClick={handleLogout} className='text-lg px-6 py-2'>
+          <button
+            onClick={handleLogout}
+            className='ttext-md md:text-lg px-4 py-1 md:px-6 md:py-2'
+          >
             Logout
           </button>
           <a
             href='/account'
-            className='text-lg text-lightGray px-6 py-2 bg-purple rounded-md hover:bg-lightPurple transition-colors duration-200'
+            className='text-md md:text-lg text-lightGray px-4 py-1 md:px-6 md:py-2 bg-purple rounded-md hover:bg-lightPurple transition-colors duration-200'
           >
             Account
           </a>
